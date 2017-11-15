@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import division, print_function
 
 import doctest
@@ -6,6 +8,8 @@ import os
 import re
 import sys
 import traceback
+
+from command import Command
 
 
 # The name of the plugin as it is displayed on the web interface. Note
@@ -678,9 +682,12 @@ class CouldNotRunJFLAPTestsError(Exception):
     pass
 
 
-def run_tests(command_prefix, test_file, time_limit):
-    """Wrapper for "runTests" that adheres to PEP8 variable naming
-    conventions."""
+def run_tests(jflap_file, test_file, time_limit=None):
+    """Run tests from test_file on jflap_file.
+
+    Total runtime is given by time_limit. If not given, time is
+    unlimited.
+    """
     try:
         with open(test_file) as f:
             try:
@@ -689,47 +696,6 @@ def run_tests(command_prefix, test_file, time_limit):
                 error = ("Could not parse test file '{}': {}"
                          .format(test_file, e.message))
                 raise CouldNotRunJFLAPTestsError(error)
-            # Determine the containing directory and literal filename
-            # for the test file.
-            directory, test_filename = os.path.split(test_file)
-            if not directory:
-                directory = "."
-            # Find all the JFLAP files that the test_file might
-            # possibly be testing.
-            jflap_filenames = []
-            for file in os.listdir(directory):
-                if file.endswith(".jff"):
-                    jflap_filenames.append(file)
-            # If there's only one JFLAP file, nothing fancy is needed,
-            # because there's only one choice.
-            if len(jflap_filenames) == 1:
-                jflap_filename = jflap_filenames[0]
-            else:
-                # Otherwise, we need to try to guess which file to
-                # test by swapping out the extension of the test file
-                # for ".jff".
-                try:
-                    extensionIndex = test_filename.rindex(".")
-                except ValueError:
-                    error = ("Test file '{}' does not have an extension"
-                             .format(test_filename))
-                    raise CouldNotRunJFLAPTestsError(error)
-                jflap_filename = test_filename[:extensionIndex] + ".jff"
-                if jflap_filename not in jflap_filenames:
-                    # We could try harder to find a match, or allow
-                    # specifying the filename of the corresponding
-                    # JFLAP file within the test file, but to be
-                    # honest that wouldn't really provide much help
-                    # (because if you can put the name of the JFLAP
-                    # file in the test file, you can just name the
-                    # test file instead).
-                    error = ("Test file '{}' does not match any of the"
-                             " available JFLAP files, which are: {}"
-                             .format(test_filename,
-                                     ", ".join("'{}'".format(file)
-                                               for file in jflap_filenames)))
-                    raise CouldNotRunJFLAPTestsError(error)
-            jflap_file = os.path.join(directory, jflap_filename)
             failedTests = {}
             all_stdout = ""
             all_stderr = ""
@@ -756,8 +722,7 @@ def run_tests(command_prefix, test_file, time_limit):
                 #
                 # [1]: https://github.com/raxod502/jflap-lib
                 # [2]: https://github.com/cbeust/jcommander/issues/306
-                command = Command(command_prefix +
-                                  ["java",
+                command = Command(["java",
                                    # The following system property
                                    # prevents the Java process from
                                    # showing up in the Mac app
@@ -845,13 +810,6 @@ def run_tests(command_prefix, test_file, time_limit):
                    "rawErr": error}
         failedTests = {}
         return summary, failedTests
-
-
-def runTests(cmdPrefix, testFile, timeLimit):
-    """Runs the tests defined in testFile, returning a tuple of dictionaries.
-
-    See the user manual for more information about this API function."""
-    return run_tests(cmdPrefix, testFile, timeLimit)
 
 
 if __name__ == "__main__":

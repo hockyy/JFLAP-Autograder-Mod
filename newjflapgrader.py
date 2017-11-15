@@ -7,8 +7,6 @@ import re
 import sys
 import traceback
 
-from app.helpers.command import Command
-
 
 # The name of the plugin as it is displayed on the web interface. Note
 # that this plugin handles both NFAs and Turing machines!

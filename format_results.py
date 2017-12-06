@@ -9,6 +9,7 @@ assert sys.argv[1] in ('--points', '--comments')
 points = sys.argv[1] == '--points'
 
 POINTS_PER_TEST = 2
+BASELINE_POINTS = 1
 
 for result_file in os.listdir('results'):
     if result_file == '.gitkeep':
@@ -20,7 +21,7 @@ for result_file in os.listdir('results'):
     total_tests = result[0]['totalTests']
     failed_tests = result[0]['failedTests']
     passed_tests = total_tests - failed_tests
-    score = passed_tests * POINTS_PER_TEST
+    score = passed_tests * POINTS_PER_TEST + BASELINE_POINTS
     if points:
         print(score)
     else:

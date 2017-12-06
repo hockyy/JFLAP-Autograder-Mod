@@ -1,6 +1,5 @@
 *.pyc
 
-/results/*
-!/results/.gitkeep
-/submissions/
-/tests
+results*
+submissions*
+tests*

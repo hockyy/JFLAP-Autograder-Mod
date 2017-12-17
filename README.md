@@ -5,20 +5,20 @@ hand.
 
 * Make sure you cloned this repository recursively, i.e.
 
-        $ git clone --recursive https://github.com/raxod502/JFLAP-Autograder.git
+      $ git clone --recursive https://github.com/raxod502/JFLAP-Autograder.git
 
   If you didn't, you can fix it:
 
-        $ git submodule update --init
+      $ git submodule update --init
 
 * Install Maven. On macOS, this is:
 
-        $ brew install maven
+      $ brew install maven
 
 * Build `jflap-lib`:
 
-        $ cd jflap-lib
-        $ mvn package
+      $ cd jflap-lib
+      $ mvn package
 
 ## Usage
 

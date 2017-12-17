@@ -49,8 +49,8 @@ The timeout is in seconds. If not provided, none is used.
 
 Next, you can convert the grading output into whatever format you'd
 like. An example script for doing this is provided
-(`format_for_canvas.py`). To understand the output format, please
-refer to the following example:
+(`format_for_canvas.py`); adjust to taste. To understand the output
+format, please refer to the following example:
 
     {
       "tests": {

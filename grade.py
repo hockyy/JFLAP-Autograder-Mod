@@ -99,4 +99,4 @@ if __name__ == "__main__":
             log("generating: '{}'".format(output_name))
             data = jflapgrader.run_tests(input_name, test_file, timeout)
             with open(output_name, 'w') as f:
-                json.dump(data, f)
+                json.dump(data, f, indent=2)

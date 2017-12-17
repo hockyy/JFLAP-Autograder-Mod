@@ -1,13 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-from __future__ import division, print_function
 
 import doctest
 import inspect
 import os
 import re
 import sys
-import traceback
+
 
 from command import Command
 
@@ -195,13 +194,13 @@ def exception_linum(height=0):
     trace (further from the source of the exception) is reported.
     Negative numbers count from the top.
 
-    >>> exec '''def foo():
+    >>> exec('''def foo():
     ...     raise ValueError("uh oh")
     ... try:
     ...     foo()
     ... except ValueError:
     ...     print(exception_linum())
-    ...     print(exception_linum(height=1))'''
+    ...     print(exception_linum(height=1))''')
     2
     4
     """
@@ -380,7 +379,7 @@ def parse_test_file_contents(contents):
     ... 0101 -> reject''')
     Traceback (most recent call last):
         ...
-    JFLAPTestFileParseError: error on line 4 while invoking check('1010'): NameError: global name 'bar' is not defined
+    JFLAPTestFileParseError: error on line 4 while invoking check('1010'): NameError: name 'bar' is not defined
 
     >>> parse_test_file_contents(r'''
     ... "ok test case" -> accept
@@ -509,7 +508,7 @@ def parse_test_file_contents(contents):
                         groups = split_with_quotes(line)
                     except StringError as e:
                         error = ("malformed test case on line {}: {}"
-                                 .format(linum, e.message))
+                                 .format(linum, str(e)))
                         raise JFLAPTestFileParseError(error)
                     if not groups:
                         # If we don't have any groups, the line must
@@ -587,7 +586,7 @@ def parse_test_file_contents(contents):
         # If one of the lists is empty, then the corresponding call is
         # a no-op. There's no need to check first.
         try:
-            exec "\n".join(words_code_lines) in namespace
+            exec("\n".join(words_code_lines), namespace)
         except SyntaxError as e:
             error = ("syntax error in definition of 'words' on line {}: {}: {}"
                      .format(words_definition_linum + (e.lineno - 1),
@@ -601,7 +600,7 @@ def parse_test_file_contents(contents):
                              e.msg))
             raise JFLAPTestFileParseError(error)
         try:
-            exec "\n".join(check_code_lines) in namespace
+            exec("\n".join(check_code_lines), namespace)
         except SyntaxError as e:
             error = ("syntax error in definition of 'check' on line {}: {}: {}"
                      .format(check_definition_linum + (e.lineno - 1),
@@ -628,8 +627,7 @@ def parse_test_file_contents(contents):
             except Exception as e:
                 error = ("error on line {} while invoking words(): {}: {}"
                          .format(words_definition_linum + (exception_linum() - 1),
-                                 exception_name(e),
-                                 e.message))
+                                 exception_name(e), str(e)))
                 raise JFLAPTestFileParseError(error)
             for word in words:
                 # Allow overriding "check" with manually specified
@@ -654,9 +652,7 @@ def parse_test_file_contents(contents):
                     error = ("error on line {} while invoking"
                              " check('{}'): {}: {}"
                              .format(check_definition_linum + (exception_linum() - 1),
-                                     word,
-                                     exception_name(e),
-                                     e.message))
+                                     word, exception_name(e), str(e)))
                     raise JFLAPTestFileParseError(error)
                 tests[word] = bool(result)
     return tests
@@ -686,7 +682,7 @@ def run_tests(jflap_file, test_file, timeout=None):
             tests = parse_test_file_contents(f.read())
         except JFLAPTestFileParseError as e:
             error = ("Could not parse test file '{}': {}"
-                     .format(test_file, e.message))
+                     .format(test_file, str(e)))
             raise CouldNotRunJFLAPTestsError(error)
         test_results = []
         # We'll also need to figure out the directory containing

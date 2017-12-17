@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import jflapgrader
 import json
 import os
@@ -23,6 +24,10 @@ def error_and_exit(msg, *args, **kwargs):
 def usage_and_exit(*args, **kwargs):
     print_stderr(USAGE, *args, **kwargs)
     sys.exit(1)
+
+def log(msg, *args, **kwargs):
+    print("[{}] {}".format(
+        datetime.datetime.now().strftime("%H:%M:%S"), msg), *args, **kwargs)
 
 if __name__ == "__main__":
     args = sys.argv[1:]
@@ -71,7 +76,7 @@ if __name__ == "__main__":
 
         # Compute the input and output lists.
         inputs = [os.path.join(input_path, fname) for fname in fnames]
-        outputs = [os.path.join(output_path, fname) for fname in fnames]
+        outputs = [os.path.join(output_path, fname + '.json') for fname in fnames]
     else:
         # There is only one input filename.
         inputs = [input_path]
@@ -79,7 +84,7 @@ if __name__ == "__main__":
         # We will produce a single file either at the specified path
         # or inside the directory named.
         if os.path.isdir(output_path):
-            outputs = [os.path.join(output_path, os.path.split(input_path)[0])]
+            outputs = [os.path.join(output_path, os.path.split(input_path)[1])]
         else:
             parent_dir = os.path.split(output_path)[0]
             if not os.path.isdir(parent_dir):
@@ -89,9 +94,9 @@ if __name__ == "__main__":
     # Now do the actual mapping.
     for input_name, output_name in zip(inputs, outputs):
         if os.path.exists(output_name):
-            print("already exists, skipping: '{}'".format(output_name))
+            log("already exists, skipping: '{}'".format(output_name))
         else:
-            print("generating: '{}'".format(output_name))
+            log("generating: '{}'".format(output_name))
             data = jflapgrader.run_tests(input_name, test_file, timeout)
-            with open(output_name) as f:
+            with open(output_name, 'w') as f:
                 json.dump(data, f)

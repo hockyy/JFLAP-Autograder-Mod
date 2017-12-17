@@ -32,8 +32,10 @@ You will need:
 
 Then you can grade your submission(s) like so:
 
-    $ ./grade.py <input-jff-or-directory> <output-file-or-directory>
-                 [--timeout <timeout>]
+    $ ./grade.py
+        [--timeout <timeout>]
+        <input-jff-or-directory> <output-file-or-directory> <test-file>
+
 
 If you provide a file, then that file is graded. If you provide a
 directory, then all of the files in that directory are graded.

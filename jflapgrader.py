@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+import datetime
 import doctest
 import inspect
 import os
@@ -673,9 +674,7 @@ def run_tests(jflap_file, test_file, timeout=None):
     The timeout for each test is given by timeout, in seconds. If not
     given, there is no timeout.
 
-    Return a dictionary of test results. (Refer to the README for the
-    schema of this dictionary; it is under the "tests" key of the
-    output schema.)
+    The return value is of the format given in the README.
     """
     with open(test_file) as f:
         try:
@@ -762,7 +761,47 @@ def run_tests(jflap_file, test_file, timeout=None):
                             "stderr": stderr,
                         },
                     }
-    return test_results
+    summary = {
+        "testsAll": [],
+        "testsTerminated": [],
+        "testsDidNotTerminate": [],
+        "testsValid": [],
+        "testsInvalid": [],
+        "testsCorrect": [],
+        "testsIncorrect": [],
+        "testsPassed": [],
+        "testsFailed": [],
+    }
+    for test, result in test_results.items():
+        summary["testsAll"].append(test)
+        if result["terminated"] is True:
+            summary["testsTerminated"].append(test)
+        elif result["terminated"] is False:
+            summary["testsDidNotTerminate"].append(test)
+        if result["valid"] is True:
+            summary["testsValid"].append(test)
+        elif result["valid"] is False:
+            summary["testsInvalid"].append(test)
+        if result["correct"] is True:
+            summary["testsCorrect"].append(test)
+        elif result["correct"] is False:
+            summary["testsIncorrect"].append(test)
+        if result["passed"] is True:
+            summary["testsPassed"].append(test)
+        elif result["passed"] is False:
+            summary["testsFailed"].append(test)
+        else:
+            raise AssertionError("non-boolean value for 'passed'")
+    info = {
+        "filename": os.path.realpath(jflap_file),
+        "timeout": timeout,
+        "timestamp": datetime.datetime.today().isoformat(),
+    }
+    return {
+        "tests": test_results,
+        "summary": summary,
+        "info": info,
+    }
 
 
 if __name__ == "__main__":

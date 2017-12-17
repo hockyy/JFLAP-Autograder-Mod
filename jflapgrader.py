@@ -673,9 +673,9 @@ def run_tests(jflap_file, test_file, timeout=None):
     The timeout for each test is given by timeout, in seconds. If not
     given, there is no timeout.
 
-    Return a list of tests that were run. (Refer to the README for the
-    schema of this list; it is under the "tests" key of the output
-    schema.)
+    Return a dictionary of test results. (Refer to the README for the
+    schema of this dictionary; it is under the "tests" key of the
+    output schema.)
     """
     with open(test_file) as f:
         try:
@@ -684,7 +684,7 @@ def run_tests(jflap_file, test_file, timeout=None):
             error = ("Could not parse test file '{}': {}"
                      .format(test_file, str(e)))
             raise CouldNotRunJFLAPTestsError(error)
-        test_results = []
+        test_results = {}
         # We'll also need to figure out the directory containing
         # this Python file, so we can find jflaplib-cli.jar.
         script_directory = os.path.split(__file__)[0]
@@ -712,7 +712,7 @@ def run_tests(jflap_file, test_file, timeout=None):
                                "run",
                                jflap_file,
                                '"{}"'.format(word)])
-            timed_out, stdout, stderr = command.run(
+            return_code, stdout, stderr, timed_out = command.run(
                 timeout=timeout,
                 env=os.environ)
             if timed_out:

@@ -21,21 +21,24 @@ class Command(object):
     output, error = '', ''
 
     def __init__(self, command):
-        if isinstance(command, basestring):
+        if isinstance(command, str):
             command = shlex.split(command)
         self.command = command
 
-    def run(self, timeout=None, compatibility=True, **kwargs):
+    def run(self, timeout=None, **kwargs):
         """Run a command.
 
-        If compatibility mode is on (default), then return (timeout,
-        output, error). Else return (returncode, output, error,
-        timeout).
+        Return a tuple of the return code from the command, the stdout
+        and stderr as strings, and whether the process timed out.
+
+        Remaining kwargs are passed to the Popen constructor.
         """
         def target(**kwargs):
             try:
                 self.process = subprocess.Popen(self.command, **kwargs)
                 self.output, self.error = self.process.communicate()
+                self.output = self.output.decode("utf-8")
+                self.error = self.error = self.error.decode("utf-8")
                 self.returncode = self.process.returncode
             except:
                 self.error = traceback.format_exc()
@@ -55,7 +58,4 @@ class Command(object):
             if self.process:
                 self.process.terminate()
                 thread.join()
-        if compatibility:
-            return timeout, self.output, self.error
-        else:
-            return self.returncode, self.output, self.error, timeout
+        return self.returncode, self.output, self.error, timeout

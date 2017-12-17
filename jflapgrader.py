@@ -664,17 +664,6 @@ def parse_test_file_contents(contents):
 
 # API functions
 
-def testFileParser(filename):
-    """Parses the provided test file, returning a list of test names.
-
-    See the user manual for more information about this API function."""
-    with open(filename) as f:
-        try:
-            return parse_test_file_contents(f.read()).keys()
-        except JFLAPTestFileParseError:
-            traceback.print_exception(sys.last_traceback)
-            return []
-
 
 class CouldNotRunJFLAPTestsError(Exception):
     """Exception thrown when none of the JFLAP tests could be run, due to
@@ -682,139 +671,108 @@ class CouldNotRunJFLAPTestsError(Exception):
     pass
 
 
-def run_tests(jflap_file, test_file, time_limit=None):
+def run_tests(jflap_file, test_file, timeout=None):
     """Run tests from test_file on jflap_file.
 
-    Total runtime is given by time_limit. If not given, time is
-    unlimited.
+    The timeout for each test is given by timeout, in seconds. If not
+    given, there is no timeout.
+
+    Return a list of tests that were run. (Refer to the README for the
+    schema of this list; it is under the "tests" key of the output
+    schema.)
     """
-    try:
-        with open(test_file) as f:
-            try:
-                tests = parse_test_file_contents(f.read())
-            except JFLAPTestFileParseError as e:
-                error = ("Could not parse test file '{}': {}"
-                         .format(test_file, e.message))
-                raise CouldNotRunJFLAPTestsError(error)
-            failedTests = {}
-            all_stdout = ""
-            all_stderr = ""
-            # To ensure that this process does not take longer
-            # than the provided time limit, we divide the time
-            # equally among each test.
-            if time_limit:
-                timeout = time_limit / len(tests)
+    with open(test_file) as f:
+        try:
+            tests = parse_test_file_contents(f.read())
+        except JFLAPTestFileParseError as e:
+            error = ("Could not parse test file '{}': {}"
+                     .format(test_file, e.message))
+            raise CouldNotRunJFLAPTestsError(error)
+        test_results = []
+        # We'll also need to figure out the directory containing
+        # this Python file, so we can find jflaplib-cli.jar.
+        script_directory = os.path.split(__file__)[0]
+        for word, should_accept in tests.items():
+            # Note that the command-line parsing library used by
+            # jflaplib-cli, JCommander, has an odd quirk in the
+            # way it parses arguments. First it trims whitespace
+            # from both ends of each argument, and then it removes
+            # a pair of double quotes if one exists. So, to ensure
+            # an argument is interpreted literally, we just wrap
+            # it in double quotes! See [1] for discussion of this
+            # issue.
+            #
+            # [1]: https://github.com/cbeust/jcommander/issues/306
+            command = Command(["java",
+                               # The following system property
+                               # prevents the Java process from
+                               # showing up in the Mac app
+                               # switcher, which is extremely
+                               # annoying.
+                               "-Dapple.awt.UIElement=true",
+                               "-jar",
+                               os.path.join(script_directory,
+                                            "jflaplib-cli.jar"),
+                               "run",
+                               jflap_file,
+                               '"{}"'.format(word)])
+            timed_out, stdout, stderr = command.run(
+                timeout=timeout,
+                env=os.environ)
+            if timed_out:
+                test_results[word] = {
+                    "expected": should_accept,
+                    "actual": None,
+                    "terminated": False,
+                    "valid": None,
+                    "correct": None,
+                    "passed": False,
+                    "output": {
+                        "stdout": stdout,
+                        "stderr": stderr,
+                    },
+                }
             else:
-                timeout = None
-            # We'll also need to figure out the directory containing
-            # this Python file, so we can find jflaplib-cli.jar.
-            script_directory = os.path.split(__file__)[0]
-            for word, should_accept in tests.items():
-                # See [1] for the source code of jflaplib-cli.jar.
-                # Note that the command-line parsing library used by
-                # jflaplib-cli, JCommander, has an odd quirk in the
-                # way it parses arguments. First it trims whitespace
-                # from both ends of each argument, and then it removes
-                # a pair of double quotes if one exists. So, to ensure
-                # an argument is interpreted literally, we just wrap
-                # it in double quotes! See [2] for discussion of this
-                # issue.
-                #
-                # [1]: https://github.com/raxod502/jflap-lib
-                # [2]: https://github.com/cbeust/jcommander/issues/306
-                command = Command(["java",
-                                   # The following system property
-                                   # prevents the Java process from
-                                   # showing up in the Mac app
-                                   # switcher, which is extremely
-                                   # annoying.
-                                   "-Dapple.awt.UIElement=true",
-                                   "-jar",
-                                   os.path.join(script_directory,
-                                                "jflaplib-cli.jar"),
-                                   "run",
-                                   jflap_file,
-                                   '"{}"'.format(word)])
-                timed_out, stdout, stderr = command.run(
-                    timeout=timeout,
-                    env=os.environ)
-                all_stdout += stdout
-                all_stderr += stderr
-                if timed_out:
-                    error = ("Timed out (took more than {} seconds)"
-                             .format(timeout))
-                    failedTests[word] = {"hint": error}
+                # jflaplib-cli should print "true" or "false",
+                # depending on whether the NFA or Turing
+                # machine accepted or rejected the input. But
+                # we handle all the possible edge cases here,
+                # just in case.
+                contains_true = "true" in stdout
+                contains_false = "false" in stdout
+                if contains_true is contains_false:
+                    test_results[word] = {
+                        "expected": should_accept,
+                        "actual": None,
+                        "terminated": True,
+                        "valid": False,
+                        "correct": None,
+                        "passed": False,
+                        "output": {
+                            "stdout": stdout,
+                            "stderr": stderr,
+                        },
+                    }
                 else:
-                    # jflaplib-cli should print "true" or "false",
-                    # depending on whether the NFA or Turing
-                    # machine accepted or rejected the input. But
-                    # we handle all the possible edge cases here,
-                    # just in case.
-                    contains_true = "true" in stdout
-                    contains_false = "false" in stdout
-                    if contains_true and contains_false:
-                        stdout = stdout.strip()
-                        if not stdout:
-                            stdout = "(none)"
-                        stderr = stderr.strip()
-                        if not stderr:
-                            stderr = "(none)"
-                        error = ("JFLAP reported both 'accept' and"
-                                 " 'reject', output: {}; error: {}"
-                                 .format(stdout.strip(), stderr.strip()))
-                        failedTests[word] = {"hint": error}
-                    elif not (contains_true or contains_false):
-                        stdout = stdout.strip()
-                        if not stdout:
-                            stdout = "(none)"
-                        stderr = stderr.strip()
-                        if not stderr:
-                            stderr = "(none)"
-                        error = ("JFLAP reported neither 'accept' nor"
-                                 " 'reject', output: {}; error: {}"
-                                 .format(stdout.strip(), stderr.strip()))
-                        failedTests[word] = {"hint": error}
-                    elif contains_true is not should_accept:
-                        error = ("This word should have been {}, but it"
-                                 " was {}"
-                                 .format(result_to_str(should_accept),
-                                         result_to_str(contains_true)))
-                        failedTests[word] = {"hint": error}
-            summary = {"died": False,
-                       "timeout": False,
-                       "totalTests": len(tests),
-                       "failedTests": len(failedTests),
-                       "rawOut": all_stdout,
-                       "rawErr": all_stderr}
-            return summary, failedTests
-    except Exception as e:
-        if isinstance(e, CouldNotRunJFLAPTestsError):
-            # If the error is a CouldNotRunJFLAPTestsError, then this
-            # code generated the error message and included all
-            # necessary information. So we can just return the
-            # message.
-            error = e.message
-        else:
-            # Otherwise, there was an unexpected error, and we'll
-            # provide the whole stack trace for debugging purposes.
-            # This is obviously very bad from a security perspective,
-            # but worrying about it would be like making sure to turn
-            # out the lights when the building is on fire, given the
-            # security of the rest of this website.
-            error = traceback.format_exc()
-        summary = {"died": True,
-                   "timeout": False,
-                   "totalTests": 0,
-                   "failedTests": 0,
-                   "rawOut": "",
-                   "rawErr": error}
-        failedTests = {}
-        return summary, failedTests
+                    test_results[word] = {
+                        "expected": should_accept,
+                        "actual": contains_true,
+                        "terminated": True,
+                        "valid": True,
+                        "correct": contains_true is should_accept,
+                        "passed": contains_true is should_accept,
+                        "output": {
+                            "stdout": stdout,
+                            "stderr": stderr,
+                        },
+                    }
+    return test_results
 
 
 if __name__ == "__main__":
-    if len(sys.argv) >= 2:
-        for filename in sys.argv[1:]:
-            print(run_tests([], filename, None))
+    args = sys.argv[1:]
+    if args:
+        print("This module is not meant to be used from the command line.",
+              file=sys.stderr)
     else:
         doctest.testmod()

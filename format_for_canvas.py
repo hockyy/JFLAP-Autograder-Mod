@@ -43,7 +43,7 @@ for result_file in os.listdir(results_dir):
                 elif info['valid'] is False:
                     reason = 'simulation produced an error'
                 elif info['correct'] is False:
-                    reason = 'wrong answer'
+                    reason = f'wrong answer\nExpected: {info["expected"]}\nActual: {info["actual"]}'
                 else:
                     reason = 'not sure what went wrong'
                 comment += ['- ' + case + ': ' + reason]

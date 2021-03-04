@@ -688,6 +688,7 @@ def run_tests(jflap_file, test_file, timeout=None):
         # this Python file, so we can find jflaplib-cli.jar.
         script_directory = os.path.split(__file__)[0]
         for word, should_accept in tests.items():
+            print("testing ", word)
             # Note that the command-line parsing library used by
             # jflaplib-cli, JCommander, has an odd quirk in the
             # way it parses arguments. First it trims whitespace

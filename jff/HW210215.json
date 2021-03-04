@@ -1,0 +1,195 @@
+{
+  "tests": {
+    "0": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "1": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "00": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "01": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "10": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "11": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "000": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "001": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "010": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "011": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    }
+  },
+  "summary": {
+    "testsAll": [
+      "0",
+      "1",
+      "00",
+      "01",
+      "10",
+      "11",
+      "000",
+      "001",
+      "010",
+      "011"
+    ],
+    "testsTerminated": [
+      "0",
+      "1",
+      "00",
+      "01",
+      "10",
+      "11",
+      "000",
+      "001",
+      "010",
+      "011"
+    ],
+    "testsDidNotTerminate": [],
+    "testsValid": [
+      "0",
+      "1",
+      "00",
+      "01",
+      "10",
+      "11",
+      "000",
+      "001",
+      "010",
+      "011"
+    ],
+    "testsInvalid": [],
+    "testsCorrect": [
+      "0",
+      "1",
+      "00",
+      "01",
+      "10",
+      "11",
+      "000",
+      "001",
+      "010",
+      "011"
+    ],
+    "testsIncorrect": [],
+    "testsPassed": [
+      "0",
+      "1",
+      "00",
+      "01",
+      "10",
+      "11",
+      "000",
+      "001",
+      "010",
+      "011"
+    ],
+    "testsFailed": []
+  },
+  "info": {
+    "filename": "C:\\Users\\ASUS\\Desktop\\kuliah\\JFLAP-Autograder-Mod\\jff\\HW210215.jff",
+    "timeout": null,
+    "timestamp": "2021-03-04T09:34:22.941494"
+  }
+}

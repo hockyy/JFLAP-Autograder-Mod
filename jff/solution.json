@@ -23,37 +23,56 @@
         "stdout": "false\r\n",
         "stderr": ""
       }
+    },
+    "acasad": {
+      "expected": true,
+      "actual": false,
+      "terminated": true,
+      "valid": true,
+      "correct": false,
+      "passed": false,
+      "output": {
+        "stdout": "false\r\n",
+        "stderr": ""
+      }
     }
   },
   "summary": {
     "testsAll": [
       "abca",
-      "aca"
+      "aca",
+      "acasad"
     ],
     "testsTerminated": [
       "abca",
-      "aca"
+      "aca",
+      "acasad"
     ],
     "testsDidNotTerminate": [],
     "testsValid": [
       "abca",
-      "aca"
+      "aca",
+      "acasad"
     ],
     "testsInvalid": [],
     "testsCorrect": [
       "abca",
       "aca"
     ],
-    "testsIncorrect": [],
+    "testsIncorrect": [
+      "acasad"
+    ],
     "testsPassed": [
       "abca",
       "aca"
     ],
-    "testsFailed": []
+    "testsFailed": [
+      "acasad"
+    ]
   },
   "info": {
-    "filename": "C:\\Users\\ASUS\\Desktop\\TBA\\HW\\JFLAP-Autograder\\jff\\test.jff",
+    "filename": "C:\\Users\\ASUS\\Desktop\\JFLAP-Autograder-Mod\\jff\\solution.jff",
     "timeout": null,
-    "timestamp": "2021-03-04T07:43:22.586105"
+    "timestamp": "2021-03-04T08:05:47.727956"
   }
 }

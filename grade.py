@@ -93,10 +93,17 @@ if __name__ == "__main__":
 
     # Now do the actual mapping.
     for input_name, output_name in zip(inputs, outputs):
-        if os.path.exists(output_name):
-            log("already exists, skipping: '{}'".format(output_name))
-        else:
-            log("generating: '{}'".format(output_name))
-            data = jflapgrader.run_tests(input_name, test_file, timeout)
-            with open(output_name, 'w') as f:
-                json.dump(data, f, indent=2)
+
+        # if os.path.exists(output_name):
+        #     log("already exists, skipping: '{}'".format(output_name))
+        # else:
+        #     log("generating: '{}'".format(output_name))
+        #     data = jflapgrader.run_tests(input_name, test_file, timeout)
+        #     with open(output_name, 'w') as f:
+        #         json.dump(data, f, indent=2)
+
+        # Replace
+        log("generating: '{}'".format(output_name))
+        data = jflapgrader.run_tests(input_name, test_file, timeout)
+        with open(output_name, 'w') as f:
+            json.dump(data, f, indent=2)

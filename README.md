@@ -3,7 +3,12 @@ hand.
 
 ## TLDR
 ```bash
-py grade.py jff/test.jff jff/tc.out jff/tc.in
+python grade.py jff/[solution].jff jff/[result].json jff/[tests].in
+python format_for_canvas.py --comments jff
+
+# or just
+
+run HW210201
 ```
 
 ## Building

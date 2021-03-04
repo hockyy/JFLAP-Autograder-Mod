@@ -18,6 +18,8 @@ def copy_to_clipboard(contents):
     sp.call(['./copy.sh', contents])
 
 for result_file in os.listdir(results_dir):
+    if(not result_file.endswith('.json')):
+        continue
     with open(os.path.join(results_dir, result_file)) as f:
         data = json.load(f)
     total_tests = len(data['summary']['testsAll'])
@@ -50,5 +52,3 @@ for result_file in os.listdir(results_dir):
         print('-' * 80)
         print(comment)
         print('-' * 80)
-        copy_to_clipboard(comment)
-        input()

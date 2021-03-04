@@ -1,0 +1,59 @@
+{
+  "tests": {
+    "abca": {
+      "expected": true,
+      "actual": true,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "true\r\n",
+        "stderr": ""
+      }
+    },
+    "aca": {
+      "expected": false,
+      "actual": false,
+      "terminated": true,
+      "valid": true,
+      "correct": true,
+      "passed": true,
+      "output": {
+        "stdout": "false\r\n",
+        "stderr": ""
+      }
+    }
+  },
+  "summary": {
+    "testsAll": [
+      "abca",
+      "aca"
+    ],
+    "testsTerminated": [
+      "abca",
+      "aca"
+    ],
+    "testsDidNotTerminate": [],
+    "testsValid": [
+      "abca",
+      "aca"
+    ],
+    "testsInvalid": [],
+    "testsCorrect": [
+      "abca",
+      "aca"
+    ],
+    "testsIncorrect": [],
+    "testsPassed": [
+      "abca",
+      "aca"
+    ],
+    "testsFailed": []
+  },
+  "info": {
+    "filename": "C:\\Users\\ASUS\\Desktop\\TBA\\HW\\JFLAP-Autograder\\jff\\test.jff",
+    "timeout": null,
+    "timestamp": "2021-03-04T07:43:22.586105"
+  }
+}

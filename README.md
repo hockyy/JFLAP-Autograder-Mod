@@ -1,6 +1,11 @@
 **JFLAP Autograder**: hopefully faster than running JFLAP tests by
 hand.
 
+## TLDR
+```bash
+py grade.py jff/test.jff jff/tc.out jff/tc.in
+```
+
 ## Building
 
 * Make sure you cloned this repository recursively, i.e.

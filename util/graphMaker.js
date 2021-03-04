@@ -1,4 +1,14 @@
 const xml = require('xml-parse'); // https://www.npmjs.com/package/xml-parse
+const fs = require('fs');
+let edges;
+
+try {  
+    edges = fs.readFileSync('graph.txt', 'utf8').toString();
+    console.log(edges);
+} catch(e) {
+    console.log('Error:', e.stack);
+}
+
 const template =
 `<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
     <type>fa</type>
@@ -8,11 +18,6 @@ const template =
 const state = `<state id="0" name="q0"><initial/></state>`;
 
 const transition = `<transition><from>1</from><to>3</to><read>0</read></transition>`;
-
-const edges =
-`
-
-`
 
 function createXML(s, ws){
     return new xml.DOM(xml.parse(s)).document.getElementsByTagName(ws)[0];

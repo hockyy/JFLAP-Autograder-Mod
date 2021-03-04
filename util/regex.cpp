@@ -51,6 +51,12 @@ void demo() {
 
 string verdict[] = {"reject", "accept"};
 
+bool solve(const string &s){
+    int cnt[2] = {0, 0};
+    trav(ch, s) cnt[ch-'0']++;
+    return (cnt[0]%6 == 0 && cnt[1]%6 == 0);
+}
+
 int main() {
 
     ios_base::sync_with_stdio(0);
@@ -58,10 +64,11 @@ int main() {
     cout.tie(0);
     string ss;
     while(cin >> ss) {
-        string pattern = R"((\d*)000(\d*)011(\d*))";
-        string pattern2 = R"((\d*)011(\d*)000(\d*))";
+        // string pattern = R"((\d*)000(\d*)011(\d*))";
+        // string pattern2 = R"((\d*)011(\d*)000(\d*))";
         cout << ss << " ";
-        bool ans = regex_match(ss, regex(pattern)) || regex_match(ss, regex(pattern2));
-        cout << verdict[ans] << endl;
+        
+        // bool ans = regex_match(ss, regex(pattern)) || regex_match(ss, regex(pattern2));
+        cout << verdict[solve(ss)] << endl;
     }
 }

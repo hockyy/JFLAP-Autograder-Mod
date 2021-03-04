@@ -1,32 +1,29 @@
-const xml = require('xml-parse'); // https://www.npmjs.com/package/xml-parse
 const fs = require('fs');
 let edges;
+let N;
 
 try {  
     edges = fs.readFileSync('graph.txt', 'utf8').toString();
-    console.log(edges);
+    edges = edges.split('\r\n');
+    N = edges[0]; edges.shift();
 } catch(e) {
     console.log('Error:', e.stack);
 }
 
-const template =
-`<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
-    <type>fa</type>
-    <automaton></automaton>
-</structure>`;
-
-const state = `<state id="0" name="q0"><initial/></state>`;
-
-const transition = `<transition><from>1</from><to>3</to><read>0</read></transition>`;
-
-function createXML(s, ws){
-    return new xml.DOM(xml.parse(s)).document.getElementsByTagName(ws)[0];
+console.log(`<automaton>`);
+for (let i = 1;i <= N;i++){
+    const currentChild = (`  <state id="${i}" name="q${i}"></state>`);
+    console.log(currentChild);
 }
 
-const automaton = createXML(template, "automaton");
-automaton.appendChild(createXML(state, "state"));
-// console.log(automaton);
-let xmlStr = xml.stringify([automaton], 2);
-console.log(xmlStr);
+
+for (const edge of edges){
+    let trav = edge.split(" ");
+    if(trav.length != 3) continue;
+    const currentChild = `  <transition><from>${trav[0]}</from><to>${trav[1]}</to><read>${trav[2]}</read></transition>`;
+    console.log(currentChild);
+}
+
+console.log(`</automaton>`);
 
 

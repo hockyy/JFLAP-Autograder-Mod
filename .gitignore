@@ -4,7 +4,14 @@ results*
 submissions*
 tests*
 
-util/*.exe
+util/*
 jff/*
+
 !jff/example.jff
 !jff/example.in
+!util/graph.txt
+!util/graphMaker.cpp
+!util/graphMaker.js
+!util/regex.cpp
+!util/stringGenerator.cpp
+!util/tcGenerator.cpp

@@ -109,7 +109,11 @@ int main(){
             edge[v].pb(u);
         }
     }
+    cout << N * N << endl;
     for(int i = 1;i <= N * N;i++){
-        trav(cur, edge[i]) cout << i << " " << cur << endl;
+        trav(cur, edge[i]) cout << i << " " << cur << " " << 1 << endl;
+    }
+    for(int i = 1;i <= N * N;i++){
+        cout << i << " " << i << " " << 0 << endl;
     }
 }

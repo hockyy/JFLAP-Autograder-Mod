@@ -27,17 +27,17 @@ void fill(vector<char> &V, char lo, char hi){
     for(;lo <= hi;lo++) V.pb(lo);
 }
 
-const int N = 20;
+const int N = 40;
 
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     vector <char> isi;
     fill(isi, '0', '1');
-    fill(isi, 'a', 'b');
+    // fill(isi, 'a', 'b');
     trav(cur, isi) cout << cur; cout << endl;
     for(int i = 1; i <= N;i++){
-        int len = getRange(1, 10);
+        int len = getRange(7, 15);
         for(int j = 0;j < len;j++) cout << isi[rng()%sz(isi)];
         cout << endl;
     }

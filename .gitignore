@@ -3,3 +3,8 @@
 results*
 submissions*
 tests*
+
+util/*.exe
+jff/*
+!jff/example.jff
+!jff/example.in
